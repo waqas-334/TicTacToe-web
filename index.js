@@ -2,7 +2,7 @@ const express = require("express");
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 
-const { makeMove } = require("./game-logic");
+const { makeMove, resetGame } = require("./game-logic");
 
 const app = express();
 const server = createServer(app);
@@ -26,9 +26,20 @@ let players = {
    * }
    */
 };
+
+let moveCounter = 0;
+
 io.on("connection", (socket) => {
   const playerID = socket.id;
   console.log("a user connected ", playerID);
+
+  socket.on("onRestart", (roomId) => {
+    console.log("onRestart: ", roomId);
+    resetGame();
+    moveCounter = 0;
+    io.to(roomId).emit("onRestart");
+    updateStatus(roomId, "X's turn!");
+  });
 
   socket.on("joinRoom", (roomId) => {
     const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
@@ -60,11 +71,36 @@ io.on("connection", (socket) => {
   });
 
   socket.on("move", (payload) => {
-    console.log("DATA ", payload);
+    let isXsTurn = moveCounter % 2 == 0;
+    console.log("is Xs Turn: ", isXsTurn);
+
+    if (isXsTurn && payload.playerSymbol === "Y") {
+      sendError(payload.room, "NOPE: First");
+      return;
+    } else if (!isXsTurn && payload.playerSymbol === "X") {
+      sendError(payload.room, "NOPE: SECOND");
+      return;
+    }
+
     makeMove(payload.position, payload.playerSymbol);
     io.to(payload.room).emit("move", payload);
+
+    let message = "X's turn!";
+    if (isXsTurn) message = "Y's turn!"; //means X has played his turn, so it should be Ys now
+    if (moveCounter == 8) message = "Tie";
+    updateStatus(payload.room, message);
+
+    moveCounter++;
   });
 });
+
+function updateStatus(roomID, message) {
+  io.to(roomID).emit("onStatusUpdate", message);
+}
+
+function sendError(roomID, message) {
+  io.to(roomID).emit("error", message);
+}
 
 function insertData(connectionSize, playerID) {
   if (connectionSize == 0) {

@@ -31,6 +31,12 @@ const board = [
   null,
 ];
 
+function resetGame() {
+  for (let i = 0; i < board.length; i++) {
+    board[i] = null;
+  }
+}
+
 function makeMove(position, playerSymbol) {
   if (board[position] === null) {
     board[position] = playerSymbol;
@@ -54,4 +60,4 @@ function makeMove(position, playerSymbol) {
 //   return false;
 // }
 
-module.exports = { makeMove };
+module.exports = { makeMove, resetGame };

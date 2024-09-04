@@ -51,8 +51,20 @@ gameSocket.on("connect", () => {
 //   console.log("ROOM SIZE: ", size);
 // });
 
+gameSocket.on("onStatusUpdate", (message) => {
+  console.log("onStatusUpdate: ", message);
+  endMessage.textContent = message;
+});
+
 gameSocket.on("error", (message) => {
   showError(message);
+});
+
+gameSocket.on("onRestart", () => {
+  console.log("onRestart");
+  for (let i = 0; i < squares.length; i++) {
+    squares[i].textContent = "";
+  }
 });
 
 gameSocket.on("roomJoined", (payload) => {
@@ -133,12 +145,13 @@ function checkTie() {
 }
 
 function restartButton() {
-  someoneWon = false;
-  for (let i = 0; i < squares.length; i++) {
-    squares[i].textContent = "";
-  }
-  endMessage.textContent = `X's turn!`;
-  currentPlayer = players[0];
+  gameSocket.emit("onRestart", room);
+  // someoneWon = false;
+  // for (let i = 0; i < squares.length; i++) {
+  //   squares[i].textContent = "";
+  // }
+  // endMessage.textContent = `X's turn!`;
+  // currentPlayer = players[0];
 }
 
 function generateRoomId() {
@@ -168,6 +181,7 @@ inputField.addEventListener("keydown", function (event) {
 });
 
 function joinRoom(roomId) {
+  console.log("JOINING ROOM: ", roomId);
   gameSocket.emit("joinRoom", roomId);
 }
 
