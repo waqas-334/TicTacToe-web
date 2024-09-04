@@ -121,20 +121,6 @@ for (let i = 0; i < squares.length; i++) {
   });
 }
 
-function checkWin(currentPlayer) {
-  for (let i = 0; i < winning_combinations.length; i++) {
-    const [a, b, c] = winning_combinations[i];
-    if (
-      squares[a].textContent === currentPlayer &&
-      squares[b].textContent === currentPlayer &&
-      squares[c].textContent === currentPlayer
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
-
 function checkTie() {
   for (let i = 0; i < squares.length; i++) {
     if (squares[i].textContent === "") {
