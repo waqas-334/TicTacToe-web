@@ -2,7 +2,7 @@ const express = require("express");
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 
-const { makeMove, resetGame, checkWin } = require("./game-logic");
+const { makeMove, resetGame, checkWin, initGame } = require("./game-logic");
 
 const app = express();
 const server = createServer(app);
@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
   socket.on("onRestart", (roomId) => {
     someoneWon = false;
     console.log("onRestart: ", roomId);
-    resetGame();
+    resetGame(roomId);
     moveCounter = 0;
     io.to(roomId).emit("onRestart");
     updateStatus(roomId, "X's turn!");
@@ -63,6 +63,7 @@ io.on("connection", (socket) => {
       roomId: roomId,
       symbol: symbol,
     });
+    initGame(roomId);
     console.log("User joined Room ", roomId);
     // }
   });
@@ -73,37 +74,34 @@ io.on("connection", (socket) => {
   });
 
   socket.on("move", (payload) => {
-    if (someoneWon) {
-      sendError("SOMEONE WON");
+    let roomId = payload.roomId;
+    let playerSymbol = payload.playerSymbol;
+
+    let result = makeMove(roomId, payload.position, playerSymbol);
+    console.log("RESULT: ", result);
+    if (result != null) {
+      if (result.isError) sendError(roomId, result.message);
+      else {
+        io.to(roomId).emit("move", payload);
+        updateStatus(roomId, result.message);
+      }
       return;
     }
 
-    let isXsTurn = moveCounter % 2 == 0;
-    console.log("is Xs Turn: ", isXsTurn);
+    // io.to(roomId).emit("move", payload);
 
-    if (isXsTurn && payload.playerSymbol === "Y") {
-      sendError(payload.room, "Not your turn");
-      return;
-    } else if (!isXsTurn && payload.playerSymbol === "X") {
-      sendError(payload.room, "Not your turn");
-      return;
-    }
+    // if (checkWin(roomId, playerSymbol)) {
+    //   updateStatus(roomId, playerSymbol + " WON ");
+    //   someoneWon = true;
+    //   return;
+    // }
 
-    makeMove(payload.position, payload.playerSymbol);
-    io.to(payload.room).emit("move", payload);
+    // let message = "X's turn!";
+    // if (isXsTurn) message = "Y's turn!"; //means X has played his turn, so it should be Ys now
+    // if (moveCounter == 8) message = "Tie";
+    // updateStatus(roomId, message);
 
-    if (checkWin(payload.playerSymbol)) {
-      updateStatus(payload.room, payload.playerSymbol + " WON ");
-      someoneWon = true;
-      return;
-    }
-
-    let message = "X's turn!";
-    if (isXsTurn) message = "Y's turn!"; //means X has played his turn, so it should be Ys now
-    if (moveCounter == 8) message = "Tie";
-    updateStatus(payload.room, message);
-
-    moveCounter++;
+    // moveCounter++;
   });
 });
 

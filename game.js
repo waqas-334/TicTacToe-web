@@ -95,7 +95,7 @@ for (let i = 0; i < squares.length; i++) {
     if (squares[i].textContent !== "") {
       return;
     }
-    let payload = { position: i, room: room, playerSymbol: playerSymbol };
+    let payload = { position: i, roomId: room, playerSymbol: playerSymbol };
     console.log("SENDING PAYLOAD: ", payload);
 
     gameSocket.emit("move", payload);
