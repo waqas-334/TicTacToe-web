@@ -1,0 +1,15 @@
+{
+  "name": "tictactoe-web",
+  "version": "1.0.0",
+  "description": "![tictactoe](https://user-images.githubusercontent.com/99427828/221902332-880e7c67-b544-4350-8b69-b01233bfea25.gif)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
