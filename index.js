@@ -45,15 +45,13 @@ io.on("connection", (socket) => {
 
   socket.on("joinRoom", (roomId) => {
     const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
-    // let symbol = "-";
-    // if (roomSize == 0) {
-    //   symbol = "X";
-    // } else symbol = "O";
-    // if (roomSize > 1) {
-    //   socket.emit("error", "ROOM FULL");
-    // } else {
-    socket.join(roomId);
 
+    if (roomSize > 1) {
+      sendError(roomId, "ROOM FULL");
+      return;
+    } else {
+      socket.join(roomId);
+    }
     insertData(roomSize, playerID);
     let symbol = players[playerID];
 
