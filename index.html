@@ -15,12 +15,40 @@
     <div id="title">
       <h1>Tic Tac Toe</h1>
     </div>
-    <div class="endGame">
+
+    <div id="title" , class="content">
+      <h3>
+        You need one more player to start the game.<br />You can join a room or
+        ask other player to join yours
+      </h3>
+    </div>
+
+    <div class="container">
+      <h3>Your Room ID:</h3>
+
+      <h2 id="current-room-id"></h2>
+
+      <img
+        src="src/images/copy.png"
+        id="copy-image"
+        alt="Copy Image"
+        style="width: 24px; height: 24px; padding-left: 10px"
+      />
+    </div>
+
+    <div class="container" style="padding-inline: 30%">
       <input
         type="text"
         class="custom-text-field"
-        placeholder="Room ID"
+        placeholder="Enter Room ID to join"
         id="roomInput"
+      />
+
+      <input
+        type="button"
+        value="Enter"
+        id="restartButton"
+        onclick="enterButton()"
       />
     </div>
     <div id="board">
@@ -34,6 +62,11 @@
       <div class="square" id="square7"></div>
       <div class="square" id="square8"></div>
     </div>
+
+    <div class="container">
+      <h2 id="error-message" style="color: red"></h2>
+    </div>
+
     <div id="endGame">
       <input
         type="button"
@@ -45,6 +78,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="game.js"></script>
+    <script src="http://localhost:35729/livereload.js"></script>
 
     <!-- <script src="client-index.js"></script> -->
   </body>

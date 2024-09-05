@@ -9,12 +9,22 @@ endMessage.textContent = `X's turn!`;
 endMessage.style.marginTop = "30px";
 endMessage.style.textAlign = "center";
 
-const roomIdElement = document.createElement("h2");
-roomIdElement.style.marginTop = "30px";
-roomIdElement.style.textAlign = "center";
+const roomIdElement = document.getElementById("current-room-id");
 
 board.after(endMessage);
-board.after(roomIdElement);
+
+document.getElementById("copy-image").addEventListener("click", function () {
+  let textToCopy = document.getElementById("current-room-id").textContent;
+  if (textToCopy === null || textToCopy.size === 0) return;
+  navigator.clipboard
+    .writeText(textToCopy)
+    .then(function () {
+      alert("Text copied to clipboard!");
+    })
+    .catch(function (error) {
+      console.error("Failed to copy text: ", error);
+    });
+});
 
 var someoneWon = false;
 const gameSocket = io();
@@ -140,6 +150,11 @@ function restartButton() {
   // currentPlayer = players[0];
 }
 
+//this will be called when Enter button is pressed
+function enterButton() {
+  joinRoom(inputField.value);
+}
+
 function generateRoomId() {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let result = "";
@@ -156,22 +171,30 @@ inputField.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     // Prevent the default action (optional)
     event.preventDefault();
-    let roomId = inputField.value;
-    if (roomId.length != 4) {
-      showError("NOT A VALID ROOM ID");
-      return;
-    }
-    joinRoom(roomId);
+    joinRoom(inputField.value);
     // Perform your desired action here
   }
 });
 
 function joinRoom(roomId) {
+  if (roomId.length != 4) {
+    showError("NOT A VALID ROOM ID");
+    return;
+  }
+
   console.log("JOINING ROOM: ", roomId);
   gameSocket.emit("joinRoom", roomId);
 }
 
 function showError(value) {
+  const errorMessage = document.getElementById("error-message");
+  errorMessage.textContent = value;
+  errorMessage.style.display = "block";
+
+  // Hide the error message after 3 seconds
+  setTimeout(function () {
+    errorMessage.style.display = "none";
+  }, 3000);
   console.error("ERROR: ", value);
 }
 

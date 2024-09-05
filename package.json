@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "connect-livereload": "^0.6.1",
     "express": "^4.19.2",
     "http-proxy-middleware": "^3.0.2",
+    "livereload": "^0.9.3",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5"
   }

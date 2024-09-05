@@ -1,6 +1,16 @@
 body {
   font-family: "Poppins", sans-serif;
   color: #000000;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  background-color: #d1d3d3;
+}
+
+.content {
+  text-align: center; /* Center text inside the content */
+  /* padding: 20px; */
+  /* border-radius: 8px; */
 }
 
 h1 {
@@ -70,4 +80,18 @@ h1 {
 /* Optional: add focus styles */
 .custom-text-field:focus {
   border-color: black; /* Ensure border remains black when focused */
+}
+
+.container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  gap: 10px;
+  align-items: center; /* Centers vertically (optional) */
+  height: 10vh; /* Optional: makes the container take up full screen height */
+}
+
+.centered-div {
+  width: 200px;
+  height: 100px;
+  background-color: lightblue;
 }
