@@ -7,7 +7,7 @@ endMessage.textContent = `X's turn!`
 endMessage.style.marginTop = '30px'
 endMessage.style.textAlign='center'
 board.after(endMessage)
-
+var someoneWon = false;
 const winning_combinations = [
     [0, 1, 2],
     [3, 4, 5],
@@ -21,15 +21,18 @@ const winning_combinations = [
 
 for(let i = 0; i < squares.length; i++){
     squares[i].addEventListener('click', () => {
+	if(someoneWon) return;
         if(squares[i].textContent !== ''){
             return
         }
         squares[i].textContent = currentPlayer
         if(checkWin(currentPlayer)) {
+	    someoneWon = true;
             endMessage.textContent=`Game over! ${currentPlayer} wins!`
             return
         }
         if(checkTie()) {
+	    someoneWon = true;
             endMessage.textContent= `Game is tied!`
             return
         }
@@ -62,13 +65,13 @@ function checkTie(){
 }
 
 function restartButton() {
+    someoneWon = false;
     for(let i = 0; i < squares.length; i++) {
         squares[i].textContent = ""
     }
     endMessage.textContent=`X's turn!`
     currentPlayer = players[0]
 }
-
 
 
 
