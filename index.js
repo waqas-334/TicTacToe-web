@@ -75,6 +75,12 @@ io.on("connection", (socket) => {
     let roomId = payload.roomId;
     let playerSymbol = payload.playerSymbol;
 
+    const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
+    if (roomSize <= 1) {
+      sendError(roomId, "Please add one more player to play with");
+      return;
+    }
+
     let result = makeMove(roomId, payload.position, playerSymbol);
     console.log("RESULT: ", result);
     if (result != null) {
